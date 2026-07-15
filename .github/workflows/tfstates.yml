@@ -17,7 +17,6 @@ jobs:
 
       - name: Validate resources
         run: |
-          ls
           cd tfstate
           terraform fmt -check -recursive
           terraform init
