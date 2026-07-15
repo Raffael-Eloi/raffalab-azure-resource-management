@@ -11,7 +11,7 @@ locals {
 resource "azurerm_resource_group" "main" {
   name     = "rg-${var.application_name}-${var.environment_name}"
   location = var.region
-  tags = local.tags
+  tags     = local.tags
 }
 
 resource "azurerm_storage_account" "main" {
@@ -20,7 +20,7 @@ resource "azurerm_storage_account" "main" {
   location                 = azurerm_resource_group.main.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
-  tags = local.tags
+  tags                     = local.tags
 }
 
 resource "azurerm_storage_container" "main" {
