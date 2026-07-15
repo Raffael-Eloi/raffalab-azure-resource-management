@@ -6,7 +6,6 @@ on:
 permissions:
   id-token: write
   contents: read
-  actions: read
 
 jobs:
   Validate:
@@ -30,7 +29,6 @@ jobs:
   Plan:
     needs: Validate
     runs-on: ubuntu-latest
-    environment: "development"
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
