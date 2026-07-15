@@ -1,5 +1,8 @@
 name: Terraform states CI/CD
-on: push
+on:
+  workflow_dispatch:
+  push: 
+
 jobs:
   Validate:
     runs-on: ubuntu-latest
