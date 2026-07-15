@@ -1,7 +1,12 @@
 name: Terraform states CI/CD
 on:
   workflow_dispatch:
-  push: 
+  push:
+
+permissions:
+  id-token: write
+  contents: read
+  actions: read
 
 jobs:
   Validate:
