@@ -13,7 +13,7 @@ jobs:
     uses: ./.github/workflows/provision-infrastructure.yml
     with: 
       folder-path: "tfstate"
-      environment: "dev"
+      environment: "development"
       
   provision-prod:
     name: "Provision production infrastructure"
@@ -21,5 +21,5 @@ jobs:
     uses: ./.github/workflows/provision-infrastructure.yml
     with:
       folder-path: "tfstate"
-      environment: "prod"
+      environment: "production"
     
