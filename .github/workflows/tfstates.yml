@@ -8,81 +8,15 @@ permissions:
   contents: read
 
 jobs:
-  Validate:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v4
-        with:
-          terraform_version: "1.15.8"
-
-      - name: Validate resources
-        run: |
-          cd tfstate
-          terraform fmt -check -recursive
-          terraform init
-          terraform validate
-          
-  Plan:
-    needs: Validate
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v4
-        with:
-          terraform_version: "1.15.8"
-
-      - name: Azure login
-        uses: azure/login@v3
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Terraform plan
-        run: |
-          cd tfstate
-          terraform plan -var-file="./env/dev.tfvars" -out=tfplan
-          
-      - name: Upload plan artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: tfplan
-          path: tfstate/tfplan
-
-  Apply:
-    needs: Plan
-    runs-on: ubuntu-latest
-    environment: "development"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v4
-        with:
-          terraform_version: "1.15.8"
-
-      - name: Azure login
-        uses: azure/login@v3
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Download plan artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: tfplan
-          path: tfstate/
-          
-      - name: Terraform apply
-        run: |
-          cd tfstate
-          terraform apply -auto-approve tfplan
+  provision-dev:
+    uses: ./.github/workflows/provision-infrastructure.yml
+    with: 
+      folder-path: "tfstate"
+      environment: "dev"
+      
+  provision-prod:
+    uses: ./.github/workflows/provision-infrastructure.yml
+    with:
+      folder-path: "tfstate"
+      environment: "prod"
+    
