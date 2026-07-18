@@ -57,6 +57,7 @@ jobs:
       - name: Terraform plan
         run: |
           cd ${{ inputs.folder-path }}
+          terraform init
           terraform plan -var-file="./env/${{ inputs.environment }}.tfvars" -out=tfplan
 
       - name: Upload plan artifact
@@ -94,4 +95,5 @@ jobs:
       - name: Terraform apply
         run: |
           cd ${{ inputs.folder-path }}
+          terraform init
           terraform apply -var-file="./env/${{ inputs.environment }}.tfvars" -auto-approve tfplan
