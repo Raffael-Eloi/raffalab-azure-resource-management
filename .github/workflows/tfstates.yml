@@ -9,12 +9,15 @@ permissions:
 
 jobs:
   provision-dev:
+    name: "Provision development infrastructure"
     uses: ./.github/workflows/provision-infrastructure.yml
     with: 
       folder-path: "tfstate"
       environment: "dev"
       
   provision-prod:
+    name: "Provision production infrastructure"
+    needs: provision-dev
     uses: ./.github/workflows/provision-infrastructure.yml
     with:
       folder-path: "tfstate"
