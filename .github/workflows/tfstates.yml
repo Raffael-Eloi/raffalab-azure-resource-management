@@ -2,6 +2,8 @@ name: Terraform states CI/CD
 on:
   workflow_dispatch:
   push:
+    paths:
+      - tfstate/**
 
 permissions:
   id-token: write
@@ -24,4 +26,3 @@ jobs:
       folder-path: "tfstate"
       environment: "production"
     secrets: inherit
-    
