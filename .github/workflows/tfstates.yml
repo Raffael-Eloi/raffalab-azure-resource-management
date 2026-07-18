@@ -11,10 +11,11 @@ jobs:
   provision-dev:
     name: "Provision development infrastructure"
     uses: ./.github/workflows/provision-infrastructure.yml
-    with: 
+    with:
       folder-path: "tfstate"
       environment: "development"
-      
+    secrets: inherit
+
   provision-prod:
     name: "Provision production infrastructure"
     needs: provision-dev
@@ -22,4 +23,5 @@ jobs:
     with:
       folder-path: "tfstate"
       environment: "production"
+    secrets: inherit
     
