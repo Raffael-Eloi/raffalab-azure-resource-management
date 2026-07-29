@@ -32,7 +32,7 @@ jobs:
         run: |
           cd ${{ inputs.folder-path }}
           terraform fmt -check -recursive
-          terraform init
+          terraform init -backend=false
           terraform validate
   
   Plan:
@@ -57,7 +57,11 @@ jobs:
       - name: Terraform plan
         run: |
           cd ${{ inputs.folder-path }}
-          terraform init
+          if [ -f "env/azurerm-config-${{ inputs.environment }}.tfbackend" ];
+            then terraform init -backend-config="env/azurerm-config-${{ inputs.environment }}.tfbackend"
+          else
+            terraform init
+          fi
           terraform plan -var-file="./env/${{ inputs.environment }}.tfvars" -out=tfplan
 
       - name: Upload plan artifact
@@ -95,5 +99,9 @@ jobs:
       - name: Terraform apply
         run: |
           cd ${{ inputs.folder-path }}
-          terraform init
+          if [ -f "env/azurerm-config-${{ inputs.environment }}.tfbackend" ];
+            then terraform init -backend-config="env/azurerm-config-${{ inputs.environment }}.tfbackend"
+          else
+            terraform init
+          fi
           terraform apply -auto-approve tfplan
