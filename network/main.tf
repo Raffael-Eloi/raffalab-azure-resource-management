@@ -116,7 +116,7 @@ resource "azurerm_network_security_rule" "deny_internet_outbound" {
   access                      = "Deny"
   protocol                    = "Tcp"
   source_port_range           = "*"
-  destination_port_ranges     = ["*"]
+  destination_port_ranges     = "*"
   source_address_prefix       = "*"
   destination_address_prefix  = "Internet"
   resource_group_name         = azurerm_resource_group.main.name
