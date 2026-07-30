@@ -16,6 +16,9 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
+
 jobs:
   Validate:
     runs-on: ubuntu-latest
@@ -27,6 +30,14 @@ jobs:
         uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: "1.15.8"
+
+      - name: Cache Terraform providers
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.TF_PLUGIN_CACHE_DIR }}
+          key: tf-providers-${{ runner.os }}-${{ hashFiles(format('{0}/.terraform.lock.hcl', inputs.folder-path)) }}
+          restore-keys: |
+            tf-providers-${{ runner.os }}-
 
       - name: Validate resources
         run: |
@@ -46,6 +57,14 @@ jobs:
         uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: "1.15.8"
+
+      - name: Cache Terraform providers
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.TF_PLUGIN_CACHE_DIR }}
+          key: tf-providers-${{ runner.os }}-${{ hashFiles(format('{0}/.terraform.lock.hcl', inputs.folder-path)) }}
+          restore-keys: |
+            tf-providers-${{ runner.os }}-
 
       - name: Azure login
         uses: azure/login@v3
@@ -82,6 +101,14 @@ jobs:
         uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: "1.15.8"
+
+      - name: Cache Terraform providers
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.TF_PLUGIN_CACHE_DIR }}
+          key: tf-providers-${{ runner.os }}-${{ hashFiles(format('{0}/.terraform.lock.hcl', inputs.folder-path)) }}
+          restore-keys: |
+            tf-providers-${{ runner.os }}-
 
       - name: Azure login
         uses: azure/login@v3
