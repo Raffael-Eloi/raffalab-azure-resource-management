@@ -1,0 +1,28 @@
+name: Terraform Management Group CI/CD
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - management-group/**
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  provision-dev:
+    name: "Provision development infrastructure"
+    uses: ./.github/workflows/provision-infrastructure.yml
+    with:
+      folder-path: "management-group"
+      environment: "development"
+    secrets: inherit
+
+  provision-prod:
+    name: "Provision production infrastructure"
+    needs: provision-dev
+    uses: ./.github/workflows/provision-infrastructure.yml
+    with:
+      folder-path: "management-group"
+      environment: "production"
+    secrets: inherit
