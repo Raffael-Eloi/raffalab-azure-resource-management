@@ -4,18 +4,21 @@ Terraform-managed Azure infrastructure for my side-projects — networking, remo
 
 [![Terraform network CI/CD](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/network.yml/badge.svg?branch=main)](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/network.yml)
 [![Terraform states CI/CD](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/tfstates.yml/badge.svg?branch=main)](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/tfstates.yml)
+[![Terraform Management Group CI/CD](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/management-group.yml/badge.svg?branch=main)](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/management-group.yml)
 
 ## Structure
 
-| Path        | Purpose                                          |
-| ----------- | ------------------------------------------------ |
-| `network/`  | VNets, subnets, IP ranges                        |
-| `tfstate/`  | Remote state backend (storage account, container)|
+| Path                | Purpose                                          |
+| ------------------- | ------------------------------------------------ |
+| `network/`          | VNets, subnets, IP ranges                        |
+| `tfstate/`          | Remote state backend (storage account, container)|
+| `management-group/` | Management group and subscription association    |
 
 ## CI/CD
 
 - `network.yml` — plan/apply on changes to `network/`
 - `tfstates.yml` — plan/apply on changes to `tfstate/`
+- `management-group.yml` — plan/apply on changes to `management-group/`
 - `provision-infrastructure.yml` — shared/reusable provisioning workflow
 
 ## Local setup
