@@ -1,0 +1,61 @@
+name: Label PR on approval
+
+on:
+  pull_request_review:
+    types: [submitted, dismissed]
+  pull_request:
+    types: [synchronize]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  add-label:
+    if: github.event_name == 'pull_request_review' && github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure "approved" label exists and apply it
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const label = "approved";
+            const { owner, repo } = context.repo;
+
+            const { data: labels } = await github.rest.issues.listLabelsForRepo({ owner, repo });
+            if (!labels.some((l) => l.name === label)) {
+              await github.rest.issues.createLabel({
+                owner,
+                repo,
+                name: label,
+                color: "0E8A16",
+                description: "PR has been approved",
+              });
+            }
+
+            await github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: context.payload.pull_request.number,
+              labels: [label],
+            });
+
+  remove-label:
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'pull_request_review' &&
+        (github.event.action == 'dismissed' || github.event.review.state == 'changes_requested'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove "approved" label
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const label = "approved";
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+
+            try {
+              await github.rest.issues.removeLabel({ owner, repo, issue_number, name: label });
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
