@@ -1,10 +1,11 @@
 # Azure Resource Management
 
-Terraform-managed Azure infrastructure for my side-projects — networking, remote state, and (planned) policies, database configs, etc. Each concern lives in its own module, provisioned independently via GitHub Actions.
+Terraform-managed Azure infrastructure for my side-projects — networking, remote state, governance policies, and (planned) database configs, etc. Each concern lives in its own module, provisioned independently via GitHub Actions.
 
 [![Terraform network CI/CD](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/network.yml/badge.svg?branch=main)](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/network.yml)
 [![Terraform states CI/CD](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/tfstates.yml/badge.svg?branch=main)](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/tfstates.yml)
 [![Terraform Management Group CI/CD](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/management-group.yml/badge.svg?branch=main)](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/management-group.yml)
+[![Terraform Policies CI/CD](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/policies.yml/badge.svg?branch=main)](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/policies.yml)
 
 ## Structure
 
@@ -13,12 +14,14 @@ Terraform-managed Azure infrastructure for my side-projects — networking, remo
 | `network/`          | VNets, subnets, IP ranges                        |
 | `tfstate/`          | Remote state backend (storage account, container)|
 | `management-group/` | Management group and subscription association    |
+| `policies/`         | Baseline governance policy initiative (required tags, allowed locations) assigned to the management group |
 
 ## CI/CD
 
 - `network.yml` — plan/apply on changes to `network/`
 - `tfstates.yml` — plan/apply on changes to `tfstate/`
 - `management-group.yml` — plan/apply on changes to `management-group/`
+- `policies.yml` — plan/apply on changes to `policies/`
 - `provision-infrastructure.yml` — shared/reusable provisioning workflow
 
 ## Local setup
