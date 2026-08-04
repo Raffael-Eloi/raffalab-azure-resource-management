@@ -184,4 +184,5 @@ resource "azurerm_private_dns_zone_virtual_network_link" "main" {
   resource_group_name   = azurerm_resource_group.main.name
   virtual_network_id    = azurerm_virtual_network.main.id
   depends_on            = [azurerm_subnet.private_subnet]
+  tags                  = local.tags
 }
