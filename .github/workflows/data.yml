@@ -1,0 +1,28 @@
+name: Terraform data CI/CD
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - data/**
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  provision-dev:
+    name: "Provision development infrastructure"
+    uses: ./.github/workflows/provision-infrastructure.yml
+    with:
+      folder-path: "data"
+      environment: "development"
+    secrets: inherit
+
+  provision-prod:
+    name: "Provision production infrastructure"
+    needs: provision-dev
+    uses: ./.github/workflows/provision-infrastructure.yml
+    with:
+      folder-path: "data"
+      environment: "production"
+    secrets: inherit

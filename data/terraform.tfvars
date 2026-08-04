@@ -1,0 +1,5 @@
+region           = "westus3"
+application_name = "data"
+owner            = "raffael-eloi"
+managed_by       = "terraform"
+cost_center      = "raffalab"
