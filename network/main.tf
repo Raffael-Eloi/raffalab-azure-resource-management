@@ -170,3 +170,17 @@ resource "azurerm_subnet_network_security_group_association" "private_subnet_sec
   subnet_id                 = azurerm_subnet.private_subnet.id
   network_security_group_id = azurerm_network_security_group.private_nsg.id
 }
+
+// Private DNS for PostGreSQL flexible servers
+resource "azurerm_private_dns_zone" "postgres_dns_zone" {
+  name                = "${var.environment_name}.raffalab.postgres.database.azure.com"
+  resource_group_name = azurerm_resource_group.main.name
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "main" {
+  name                  = "link-postgres-dns-${var.environment_name}"
+  private_dns_zone_name = azurerm_private_dns_zone.postgres_dns_zone.name
+  resource_group_name   = azurerm_resource_group.main.name
+  virtual_network_id    = azurerm_virtual_network.main.id
+  depends_on            = [azurerm_subnet.private_subnet]
+}
