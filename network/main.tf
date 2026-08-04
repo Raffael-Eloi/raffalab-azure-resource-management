@@ -175,6 +175,7 @@ resource "azurerm_subnet_network_security_group_association" "private_subnet_sec
 resource "azurerm_private_dns_zone" "postgres_dns_zone" {
   name                = "${var.environment_name}.raffalab.postgres.database.azure.com"
   resource_group_name = azurerm_resource_group.main.name
+  tags                = local.tags
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "main" {
