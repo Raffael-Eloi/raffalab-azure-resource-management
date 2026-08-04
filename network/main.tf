@@ -7,6 +7,8 @@ resource "azurerm_resource_group" "main" {
 locals {
   public_address_space  = cidrsubnet(var.base_address_space, 2, 0)
   private_address_space = cidrsubnet(var.base_address_space, 2, 1)
+  // Quarter 2 is subdivided into small slices for delegated services (indexes 8-11 of a /4 split); quarter 3 is untouched reserve
+  data_address_space = cidrsubnet(var.base_address_space, 4, 8)
 }
 
 resource "azurerm_network_security_group" "public_nsg" {
@@ -171,6 +173,78 @@ resource "azurerm_subnet_network_security_group_association" "private_subnet_sec
   network_security_group_id = azurerm_network_security_group.private_nsg.id
 }
 
+// Data subnet: delegated to PostgreSQL flexible servers (exclusive to them by Azure rule)
+resource "azurerm_subnet" "data_subnet" {
+  name                 = "snet-data"
+  resource_group_name  = azurerm_resource_group.main.name
+  virtual_network_name = azurerm_virtual_network.main.name
+  address_prefixes     = [local.data_address_space]
+  service_endpoints    = ["Microsoft.Storage"]
+
+  delegation {
+    name = "postgres-flexible-server"
+    service_delegation {
+      name    = "Microsoft.DBforPostgreSQL/flexibleServers"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+    }
+  }
+}
+
+resource "azurerm_network_security_group" "data_nsg" {
+  name                = "nsg-${var.application_name}-data"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  tags                = local.tags
+}
+
+resource "azurerm_network_security_rule" "data_nsg_allow_postgres_inbound" {
+  name                        = "allow-postgres-inbound"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "5432"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.main.name
+  network_security_group_name = azurerm_network_security_group.data_nsg.name
+}
+
+// Flexible server needs outbound HTTPS to Azure Storage (backups); allow it before denying internet
+resource "azurerm_network_security_rule" "data_nsg_allow_storage_outbound" {
+  name                        = "allow-storage-outbound"
+  priority                    = 100
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "443"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "Storage"
+  resource_group_name         = azurerm_resource_group.main.name
+  network_security_group_name = azurerm_network_security_group.data_nsg.name
+}
+
+resource "azurerm_network_security_rule" "data_nsg_deny_internet_outbound" {
+  name                        = "deny-internet-outbound"
+  priority                    = 110
+  direction                   = "Outbound"
+  access                      = "Deny"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "Internet"
+  resource_group_name         = azurerm_resource_group.main.name
+  network_security_group_name = azurerm_network_security_group.data_nsg.name
+}
+
+resource "azurerm_subnet_network_security_group_association" "data_subnet_security_group" {
+  subnet_id                 = azurerm_subnet.data_subnet.id
+  network_security_group_id = azurerm_network_security_group.data_nsg.id
+}
+
 // Private DNS for PostGreSQL flexible servers
 resource "azurerm_private_dns_zone" "postgres_dns_zone" {
   name                = "${var.environment_name}.raffalab.postgres.database.azure.com"
@@ -183,6 +257,5 @@ resource "azurerm_private_dns_zone_virtual_network_link" "main" {
   private_dns_zone_name = azurerm_private_dns_zone.postgres_dns_zone.name
   resource_group_name   = azurerm_resource_group.main.name
   virtual_network_id    = azurerm_virtual_network.main.id
-  depends_on            = [azurerm_subnet.private_subnet]
   tags                  = local.tags
 }
