@@ -1,0 +1,4 @@
+resource_group_name  = "rg-tfstates-dev"
+storage_account_name = "straffalabdev"
+container_name       = "tfstates"
+key                  = "iam.tfstate"
