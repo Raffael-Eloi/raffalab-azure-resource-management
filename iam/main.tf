@@ -16,14 +16,14 @@ locals {
 
 // Platform personas
 resource "azuread_group" "platform_admins" {
-  display_name     = "grp-raffalab-platform-admins-${var.environment_name}"
+  display_name     = "grp-platform-admins-${var.environment_name}"
   description      = "Platform operators: full control over the raffalab management group (network, policies, governance, state infra)."
   security_enabled = true
   owners           = [data.azuread_client_config.current.object_id]
 }
 
 resource "azuread_group" "readers" {
-  display_name     = "grp-raffalab-readers-${var.environment_name}"
+  display_name     = "grp-readers-${var.environment_name}"
   description      = "Read-only visibility over everything under the raffalab management group."
   security_enabled = true
   owners           = [data.azuread_client_config.current.object_id]
@@ -31,7 +31,7 @@ resource "azuread_group" "readers" {
 
 // Workload personas
 resource "azuread_group" "data_admins" {
-  display_name     = "grp-raffalab-data-admins-${var.environment_name}"
+  display_name     = "grp-data-admins-${var.environment_name}"
   description      = "Operators of the data workload. Contributor on rg-data-${var.environment_name} is assigned by the data module to avoid a circular dependency between states."
   security_enabled = true
   owners           = [data.azuread_client_config.current.object_id]
@@ -40,7 +40,7 @@ resource "azuread_group" "data_admins" {
 // Data-plane only: PostgreSQL Entra administrators. Deliberately holds no Azure RBAC
 // role — being DB admin must not imply any right to change Azure resources.
 resource "azuread_group" "psql_admins" {
-  display_name     = "grp-raffalab-psql-admins-${var.environment_name}"
+  display_name     = "grp-psql-admins-${var.environment_name}"
   description      = "Microsoft Entra administrators of the PostgreSQL flexible server (data plane only)."
   security_enabled = true
   owners           = [data.azuread_client_config.current.object_id]
