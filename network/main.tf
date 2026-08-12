@@ -226,6 +226,21 @@ resource "azurerm_network_security_rule" "data_nsg_allow_storage_outbound" {
   network_security_group_name = azurerm_network_security_group.data_nsg.name
 }
 
+// Entra-only auth: the server must reach Entra ID to validate principals (e.g. the AD administrator)
+resource "azurerm_network_security_rule" "data_nsg_allow_entra_outbound" {
+  name                        = "allow-entra-outbound"
+  priority                    = 105
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "443"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "AzureActiveDirectory"
+  resource_group_name         = azurerm_resource_group.main.name
+  network_security_group_name = azurerm_network_security_group.data_nsg.name
+}
+
 resource "azurerm_network_security_rule" "data_nsg_deny_internet_outbound" {
   name                        = "deny-internet-outbound"
   priority                    = 110
