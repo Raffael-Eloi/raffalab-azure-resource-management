@@ -2,13 +2,6 @@
 
 Terraform-managed Azure infrastructure for my side-projects — networking, remote state, governance policies, identity and access management, and database configs. Each concern lives in its own module, provisioned independently via GitHub Actions.
 
-[![Terraform network CI/CD](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/network.yml/badge.svg?branch=main)](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/network.yml)
-[![Terraform states CI/CD](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/tfstates.yml/badge.svg?branch=main)](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/tfstates.yml)
-[![Terraform Management Group CI/CD](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/management-group.yml/badge.svg?branch=main)](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/management-group.yml)
-[![Terraform Policies CI/CD](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/policies.yml/badge.svg?branch=main)](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/policies.yml)
-[![Terraform iam CI/CD](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/iam.yml/badge.svg?branch=main)](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/iam.yml)
-[![Terraform data CI/CD](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/data.yml/badge.svg?branch=main)](https://github.com/Raffael-Eloi/raffalab-azure-resource-management/actions/workflows/data.yml)
-
 ## Structure
 
 | Path                | Purpose                                          |
