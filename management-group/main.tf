@@ -2,7 +2,7 @@ data "azurerm_subscription" "current" {}
 
 resource "azurerm_management_group" "main" {
   display_name = "RaffaLabManagementGroup"
-  name         = "mg-raffalab"
+  name         = "mg-raffalab-${var.environment_name}"
 }
 
 resource "azurerm_management_group_subscription_association" "main" {

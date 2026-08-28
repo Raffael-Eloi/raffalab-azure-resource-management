@@ -12,7 +12,7 @@ data "terraform_remote_state" "management_group" {
 
 locals {
   management_group_id = data.terraform_remote_state.management_group.outputs.management_group_id
-  allowed_locations   = [var.region]
+  allowed_locations   = [var.region1, var.region2]
   required_tags       = ["environment", "project", "owner", "managed_by", "cost_center"]
 }
 
@@ -114,12 +114,12 @@ resource "azurerm_management_group_policy_assignment" "baseline" {
   }
 
   non_compliance_message {
-    content                        = "Resources may only be deployed to ${var.region}."
+    content                        = "Resources may only be deployed to ${var.region1} or ${var.region2}."
     policy_definition_reference_id = "allowed-locations-resources"
   }
 
   non_compliance_message {
-    content                        = "Resource groups may only be created in ${var.region}."
+    content                        = "Resource groups may only be created in ${var.region1} or ${var.region2}."
     policy_definition_reference_id = "allowed-locations-resource-groups"
   }
 }
